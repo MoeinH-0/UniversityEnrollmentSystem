@@ -1,3 +1,18 @@
 spring:
   application:
     name: UniversityEnrollmentSystem
+
+  datasource:
+    url: jdbc:postgresql://localhost/university_enrollment
+    username: postgres
+    password: 1111
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
