@@ -1,15 +1,20 @@
 package com.example.universityenrollmentsystem.domain.entity.academic;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
+import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Getter
 public class Semester extends BaseEntity<Long> {
     private String title;
     private LocalDate startDate;
     private LocalDate endDate;
+    private final List<CourseOffering> courseOfferings = new ArrayList<>();
 
     public Semester(String title, LocalDate startDate, LocalDate endDate) {
         if (title == null || title.isBlank())
@@ -51,5 +56,23 @@ public class Semester extends BaseEntity<Long> {
             throw new IllegalArgumentException("End date cannot be before start date");
 
         this.endDate = newEndDate;
+    }
+    public List<CourseOffering> getCourseOfferings() {
+        return Collections.unmodifiableList(courseOfferings);
+    }
+
+    public void addCourseOffering(CourseOffering courseOffering) {
+        if (courseOffering == null)
+            throw new IllegalArgumentException("CourseOffering cannot be null");
+        if (this.courseOfferings.contains(courseOffering))
+            throw new IllegalStateException("CourseOffering already added");
+        this.courseOfferings.add(courseOffering);
+    }
+
+    public void removeCourseOffering(CourseOffering courseOffering) {
+        if (courseOffering == null)
+            throw new IllegalArgumentException("CourseOffering cannot be null");
+        if (!this.courseOfferings.remove(courseOffering))
+            throw new IllegalStateException("CourseOffering is not associated with this semester");
     }
 }

@@ -5,6 +5,7 @@ import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -24,6 +25,10 @@ public class Major extends BaseEntity<Long> {
             throw new IllegalArgumentException("Name cannot be null or empty");
         
         this.name = newName;
+    }
+
+    public List<Course> getCourses() {
+        return Collections.unmodifiableList(courses);
     }
 
     public void addCourse(Course course) {

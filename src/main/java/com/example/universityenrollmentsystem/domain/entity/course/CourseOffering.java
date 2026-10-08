@@ -10,8 +10,10 @@ public class CourseOffering extends BaseEntity<Long> {
     private final Semester semester;
     private String professorName;
     private String section;
+    private final boolean guestAllowed;
 
-    public CourseOffering(Course course, Semester semester, String professorName, String section) {
+    public CourseOffering(Course course, Semester semester, String professorName,
+                          String section, boolean guestAllowed) {
         if (course == null)
             throw new IllegalArgumentException("Course cannot be null");
             
@@ -22,6 +24,7 @@ public class CourseOffering extends BaseEntity<Long> {
         this.semester = semester;
         this.professorName = professorName;
         this.section = section;
+        this.guestAllowed = guestAllowed;
     }
 
     public void changeProfessor(String newProfessorName) {

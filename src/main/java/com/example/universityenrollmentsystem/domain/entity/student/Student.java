@@ -4,9 +4,11 @@ import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.academic.Major;
+import com.example.universityenrollmentsystem.domain.service.enrollment.EnrollmentPlanStrategy;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -14,9 +16,10 @@ public class Student extends BaseEntity<Long> {
     private String fullName;
     private final String studentNumber;
     private Major major;
+    private EnrollmentPlanType planType;
     private final List<EnrollmentRecord> enrollments = new ArrayList<>();
 
-    public Student(String fullName, String studentNumber, Major major) {
+    public Student(String fullName, String studentNumber, Major major, EnrollmentPlanType planType) {
         if (fullName == null || fullName.isBlank())
             throw new IllegalArgumentException("FullName cannot be null or empty");
             
@@ -26,9 +29,13 @@ public class Student extends BaseEntity<Long> {
         if (major == null)
             throw new IllegalArgumentException("Major cannot be null");
             
+        if (planType == null)
+            throw new IllegalArgumentException("PlanType cannot be null");
+            
         this.fullName = fullName;
         this.studentNumber = studentNumber;
         this.major = major;
+        this.planType = planType;
     }
 
     public void updateFullName(String newFullName) {
@@ -41,16 +48,41 @@ public class Student extends BaseEntity<Long> {
     public void updateMajor(Major newMajor) {
         if (newMajor == null)
             throw new IllegalArgumentException("Major cannot be null");
-
+            
         this.major = newMajor;
     }
 
-    public void enroll(CourseOffering courseOffering) {
-        if (courseOffering == null)
-            throw new IllegalArgumentException("CourseOffering cannot be null");
+    public void updatePlanType(EnrollmentPlanType newPlanType) {
+        if (newPlanType == null)
+            throw new IllegalArgumentException("PlanType cannot be null");
+            
+        this.planType = newPlanType;
+    }
 
-        EnrollmentRecord record = new EnrollmentRecord(this, courseOffering);
-        this.enrollments.add(record);
+    public List<EnrollmentRecord> getEnrollments() {
+        return Collections.unmodifiableList(enrollments);
+    }
+
+    public void enroll(List<CourseOffering> courseOfferings, EnrollmentPlanStrategy strategy) {
+        if (courseOfferings == null || courseOfferings.isEmpty())
+            throw new IllegalArgumentException("CourseOfferings cannot be null or empty");
+
+        if (strategy == null)
+            throw new IllegalArgumentException("Strategy cannot be null");
+
+        strategy.validate(this, courseOfferings);
+
+        for (CourseOffering courseOffering : courseOfferings) {
+            boolean alreadyEnrolledOrPassed = enrollments.stream()
+                    .anyMatch(r -> r.getCourseOffering().equals(courseOffering) &&
+                            (r.getStatus() == CourseStatus.IN_PROGRESS || r.getStatus() == CourseStatus.PASSED));
+
+            if (alreadyEnrolledOrPassed)
+                throw new IllegalStateException("Student is already enrolled in or has passed this course");
+
+            EnrollmentRecord record = new EnrollmentRecord(this, courseOffering);
+            this.enrollments.add(record);
+        }
     }
 
     public void drop(CourseOffering courseOffering) {
