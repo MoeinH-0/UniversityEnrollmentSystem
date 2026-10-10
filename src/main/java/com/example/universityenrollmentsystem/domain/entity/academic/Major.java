@@ -25,6 +25,9 @@ public class Major extends BaseEntity<Long> {
     )
     private final List<Course> courses = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public Major(String name) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Name cannot be null or empty");

@@ -22,6 +22,9 @@ public class EnrollmentRecord extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
 
+    @Column
+    private Double grade;
+
     public EnrollmentRecord(Student student, CourseOffering courseOffering) {
         if (student == null)
             throw new IllegalArgumentException("Student cannot be null");

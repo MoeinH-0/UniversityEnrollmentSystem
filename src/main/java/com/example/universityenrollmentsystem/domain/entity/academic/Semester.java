@@ -26,6 +26,9 @@ public class Semester extends BaseEntity<Long> {
     @Column(nullable = false)
     private LocalDate endDate;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public Semester(String title, LocalDate startDate, LocalDate endDate) {
         if (title == null || title.isBlank())
             throw new IllegalArgumentException("Title cannot be null or empty");

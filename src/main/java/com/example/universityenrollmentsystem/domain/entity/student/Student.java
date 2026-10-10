@@ -24,6 +24,12 @@ public class Student extends BaseEntity<Long> {
     @Column(nullable = false, unique = true)
     private String studentNumber;
 
+    @Column(length = 100)
+    private String email;
+
+    @Column(length = 20)
+    private String phoneNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "major_id", nullable = false)
     private Major major;
@@ -31,22 +37,26 @@ public class Student extends BaseEntity<Long> {
     @Enumerated(EnumType.STRING)
     private EnrollmentPlanType planType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StudentStatus status = StudentStatus.ACTIVE;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnrollmentRecord> enrollments = new ArrayList<>();
 
     public Student(String fullName, String studentNumber, Major major, EnrollmentPlanType planType) {
         if (fullName == null || fullName.isBlank())
             throw new IllegalArgumentException("FullName cannot be null or empty");
-            
+
         if (studentNumber == null || studentNumber.isBlank())
             throw new IllegalArgumentException("StudentNumber cannot be null or empty");
-            
+
         if (major == null)
             throw new IllegalArgumentException("Major cannot be null");
-            
+
         if (planType == null)
             throw new IllegalArgumentException("PlanType cannot be null");
-            
+
         this.fullName = fullName;
         this.studentNumber = studentNumber;
         this.major = major;
@@ -54,6 +64,11 @@ public class Student extends BaseEntity<Long> {
     }
 
     protected Student(){}
+
+    public void updateContactInfo(String email, String phoneNumber) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
     public void updateFullName(String newFullName) {
         if (newFullName == null || newFullName.isBlank())

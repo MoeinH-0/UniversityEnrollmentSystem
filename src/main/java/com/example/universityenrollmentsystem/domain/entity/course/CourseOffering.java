@@ -38,6 +38,9 @@ public class CourseOffering extends BaseEntity<Long> {
     @Column
     private LocalDate examDate;
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public CourseOffering(Course course, Semester semester, String professorName,
                           String section, boolean guestAllowed, int capacity,
                           String classTime, LocalDate examDate) {

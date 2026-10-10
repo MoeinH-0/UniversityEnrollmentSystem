@@ -38,6 +38,9 @@ public class Course extends BaseEntity<Long> {
     )
     private List<Course> prerequisites = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean isDeleted = false;
+
     public static final int MIN_CREDITS = 1;
     public static final int MAX_CREDITS = 4;
 
