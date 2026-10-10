@@ -2,6 +2,9 @@ package com.example.universityenrollmentsystem.domain.entity.course;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.academic.Major;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -9,25 +12,53 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Entity
+@Table(name = "courses")
 public class Course extends BaseEntity<Long> {
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @Column(nullable = false, length = 30, unique = true)
     private String courseCode;
-    private final int credits;
-    private final List<Major> majors = new ArrayList<>();
+
+    @Column(nullable = false)
+    @Max(value = MAX_CREDITS)
+    @Min(value = MIN_CREDITS)
+    private int credits;
+
+    @ManyToMany(mappedBy = "courses")
+    private List<Major> majors = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "course_prerequisites",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "prerequisite_id")
+    )
+    private List<Course> prerequisites = new ArrayList<>();
+
+    public static final int MIN_CREDITS = 1;
+    public static final int MAX_CREDITS = 4;
 
     public Course(String name, String courseCode, int credits) {
         if (name == null || name.isBlank())
             throw new IllegalArgumentException("Name cannot be null or empty");
-            
+
         if (courseCode == null || courseCode.isBlank())
             throw new IllegalArgumentException("CourseCode cannot be null or empty");
-            
-        if (credits <= 0)
-            throw new IllegalArgumentException("Credits must be greater than zero");
-            
+
+        if (credits < MIN_CREDITS || credits > MAX_CREDITS)
+            throw new IllegalArgumentException(String.format(
+                    "Credits must be between %d and %d", MIN_CREDITS, MAX_CREDITS));
+
         this.name = name;
         this.courseCode = courseCode;
         this.credits = credits;
+    }
+
+    protected Course() {
+
     }
 
     public void updateName(String newName) {
@@ -48,18 +79,28 @@ public class Course extends BaseEntity<Long> {
         return Collections.unmodifiableList(majors);
     }
 
-    public void addMajor(Major major) {
-        if (major == null)
-            throw new IllegalArgumentException("Major cannot be null");
-        if (this.majors.contains(major))
-            throw new IllegalStateException("Major already added");
-        this.majors.add(major);
+    public List<Course> getPrerequisites() {
+        return Collections.unmodifiableList(prerequisites);
     }
 
-    public void removeMajor(Major major) {
-        if (major == null)
-            throw new IllegalArgumentException("Major cannot be null");
-        if (!this.majors.remove(major))
-            throw new IllegalStateException("Major is not associated with this course");
+    public void addPrerequisite(Course course) {
+        if (course == null)
+            throw new IllegalArgumentException("Prerequisite cannot be null");
+
+        if (this.equals(course))
+            throw new IllegalStateException("A course cannot be a prerequisite of itself");
+
+        if (this.prerequisites.contains(course))
+            throw new IllegalStateException("Prerequisite already added");
+
+        this.prerequisites.add(course);
+    }
+
+    public void removePrerequisite(Course course) {
+        if (course == null)
+            throw new IllegalArgumentException("Prerequisite cannot be null");
+
+        if (!this.prerequisites.remove(course))
+            throw new IllegalStateException("Course is not a prerequisite");
     }
 }

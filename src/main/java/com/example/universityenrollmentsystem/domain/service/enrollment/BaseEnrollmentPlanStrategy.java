@@ -1,6 +1,8 @@
 package com.example.universityenrollmentsystem.domain.service.enrollment;
 
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
+import com.example.universityenrollmentsystem.domain.entity.course.Course;
+import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.student.Student;
 
 import java.util.List;
@@ -12,6 +14,7 @@ public abstract class BaseEnrollmentPlanStrategy implements EnrollmentPlanStrate
         checkMaxCredits(student, courseOfferings);
         checkDuplicates(student, courseOfferings);
         checkMajorMatch(student, courseOfferings);
+        checkPrerequisites(student, courseOfferings);
         applySpecificRules(student, courseOfferings);
     }
 
@@ -45,6 +48,19 @@ public abstract class BaseEnrollmentPlanStrategy implements EnrollmentPlanStrate
         for (CourseOffering offering : courseOfferings) {
             if (!student.getMajor().getCourses().contains(offering.getCourse()))
                 throw new IllegalStateException("Course must belong to student's major.");
+        }
+    }
+
+    private void checkPrerequisites(Student student, List<CourseOffering> courseOfferings) {
+        for (CourseOffering offering : courseOfferings) {
+            for (Course prerequisite : offering.getCourse().getPrerequisites()) {
+                boolean hasPassed = student.getEnrollments().stream()
+                        .anyMatch(e -> e.getCourseOffering().getCourse().equals(prerequisite) 
+                                && e.getStatus() == CourseStatus.PASSED);
+                
+                if (!hasPassed)
+                    throw new IllegalStateException("Prerequisite not passed for course: " + offering.getCourse().getName());
+            }
         }
     }
 
