@@ -105,4 +105,12 @@ public class CourseOffering extends BaseEntity<Long> {
 
         this.examDate = newExamDate;
     }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
+
+    public void updateGuestPolicy(boolean guestAllowed) {
+        this.guestAllowed = guestAllowed;
+    }
 }

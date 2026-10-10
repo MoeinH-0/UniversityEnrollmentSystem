@@ -1,4 +1,4 @@
 package com.example.universityenrollmentsystem.service.courseOfferings.professor;
 
-public class ChangeCourseOfferingProfessorCommand {
+public record ChangeCourseOfferingProfessorCommand(Long courseOfferingId, String newProfessorName) {
 }

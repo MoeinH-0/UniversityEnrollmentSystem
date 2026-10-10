@@ -39,22 +39,27 @@ public class EnrollmentRecord extends BaseEntity<Long> {
 
     protected EnrollmentRecord(){}
 
+    public static final double MIN_GRADE = 0.0;
+    public static final double MAX_GRADE = 20.0;
+    public static final double PASSING_GRADE = 10.0;
+    public static final int MAX_GRADE_DECIMALS = 2;
+
     public void assignGrade(Double grade) {
         if (grade == null)
             throw new IllegalArgumentException("Grade cannot be null");
 
-        if (grade < 0.0 || grade > 20.0)
-            throw new IllegalArgumentException("Grade must be between 0 and 20");
+        if (grade < MIN_GRADE || grade > MAX_GRADE)
+            throw new IllegalArgumentException("Grade must be between " + MIN_GRADE + " and " + MAX_GRADE);
 
-        if (java.math.BigDecimal.valueOf(grade).stripTrailingZeros().scale() > 2)
-            throw new IllegalArgumentException("Grade can have at most 2 decimal places");
+        if (java.math.BigDecimal.valueOf(grade).stripTrailingZeros().scale() > MAX_GRADE_DECIMALS)
+            throw new IllegalArgumentException("Grade can have at most " + MAX_GRADE_DECIMALS + " decimal places");
 
         if (this.status != CourseStatus.IN_PROGRESS)
             throw new IllegalStateException("Can only assign grade to in-progress courses");
 
         this.grade = grade;
         
-        if (grade >= 10.0)
+        if (grade >= PASSING_GRADE)
             this.status = CourseStatus.PASSED;
         else
             this.status = CourseStatus.FAILED;

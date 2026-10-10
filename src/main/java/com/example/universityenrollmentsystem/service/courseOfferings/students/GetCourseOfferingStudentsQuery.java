@@ -1,4 +1,4 @@
 package com.example.universityenrollmentsystem.service.courseOfferings.students;
 
-public class GetCourseOfferingStudentsQuery {
+public record GetCourseOfferingStudentsQuery(Long courseOfferingId) {
 }

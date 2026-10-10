@@ -1,4 +1,4 @@
 package com.example.universityenrollmentsystem.service.courseOfferings.grade;
 
-public class SubmitStudentGradeCommand {
+public record SubmitStudentGradeCommand(Long studentId, Long courseOfferingId, Double grade) {
 }

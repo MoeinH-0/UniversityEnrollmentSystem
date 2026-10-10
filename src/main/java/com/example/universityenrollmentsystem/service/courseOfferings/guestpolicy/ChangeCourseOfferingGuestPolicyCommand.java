@@ -1,5 +1,4 @@
 package com.example.universityenrollmentsystem.service.courseOfferings.guestpolicy;
 
-public class ChangeCourseOfferingGuestPolicyCommand {
+public record ChangeCourseOfferingGuestPolicyCommand(Long courseOfferingId, boolean guestAllowed) {
 }
-

@@ -1,5 +1,4 @@
 package com.example.universityenrollmentsystem.service.courseOfferings.cancel;
 
-public class CancelCourseOfferingCommand {
+public record CancelCourseOfferingCommand(Long courseOfferingId) {
 }
-
