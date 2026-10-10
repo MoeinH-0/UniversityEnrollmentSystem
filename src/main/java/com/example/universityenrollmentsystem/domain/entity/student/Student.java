@@ -5,6 +5,7 @@ import com.example.universityenrollmentsystem.domain.entity.course.CourseOfferin
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.academic.Major;
 import com.example.universityenrollmentsystem.domain.service.enrollment.EnrollmentPlanStrategy;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -12,12 +13,26 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Entity
+@Table(name = "students")
+
 public class Student extends BaseEntity<Long> {
+
+    @Column(nullable = false)
     private String fullName;
-    private final String studentNumber;
+
+    @Column(nullable = false, unique = true)
+    private String studentNumber;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "major_id", nullable = false)
     private Major major;
+
+    @Enumerated(EnumType.STRING)
     private EnrollmentPlanType planType;
-    private final List<EnrollmentRecord> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EnrollmentRecord> enrollments = new ArrayList<>();
 
     public Student(String fullName, String studentNumber, Major major, EnrollmentPlanType planType) {
         if (fullName == null || fullName.isBlank())
@@ -37,6 +52,8 @@ public class Student extends BaseEntity<Long> {
         this.major = major;
         this.planType = planType;
     }
+
+    protected Student(){}
 
     public void updateFullName(String newFullName) {
         if (newFullName == null || newFullName.isBlank())

@@ -2,6 +2,9 @@ package com.example.universityenrollmentsystem.domain.entity.academic;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -10,11 +13,18 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Entity
+@Table(name = "semesters")
 public class Semester extends BaseEntity<Long> {
+
+    @Column(nullable = false, length = 100, unique = true)
     private String title;
+
+    @Column(nullable = false)
     private LocalDate startDate;
+
+    @Column(nullable = false)
     private LocalDate endDate;
-    private final List<CourseOffering> courseOfferings = new ArrayList<>();
 
     public Semester(String title, LocalDate startDate, LocalDate endDate) {
         if (title == null || title.isBlank())
@@ -30,6 +40,7 @@ public class Semester extends BaseEntity<Long> {
         this.startDate = startDate;
         this.endDate = endDate;
     }
+    protected Semester(){}
 
     public void updateTitle(String newTitle) {
         if (newTitle == null || newTitle.isBlank())
@@ -56,23 +67,5 @@ public class Semester extends BaseEntity<Long> {
             throw new IllegalArgumentException("End date cannot be before start date");
 
         this.endDate = newEndDate;
-    }
-    public List<CourseOffering> getCourseOfferings() {
-        return Collections.unmodifiableList(courseOfferings);
-    }
-
-    public void addCourseOffering(CourseOffering courseOffering) {
-        if (courseOffering == null)
-            throw new IllegalArgumentException("CourseOffering cannot be null");
-        if (this.courseOfferings.contains(courseOffering))
-            throw new IllegalStateException("CourseOffering already added");
-        this.courseOfferings.add(courseOffering);
-    }
-
-    public void removeCourseOffering(CourseOffering courseOffering) {
-        if (courseOffering == null)
-            throw new IllegalArgumentException("CourseOffering cannot be null");
-        if (!this.courseOfferings.remove(courseOffering))
-            throw new IllegalStateException("CourseOffering is not associated with this semester");
     }
 }

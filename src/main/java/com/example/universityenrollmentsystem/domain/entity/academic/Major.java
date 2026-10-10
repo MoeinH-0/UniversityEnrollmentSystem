@@ -2,6 +2,7 @@ package com.example.universityenrollmentsystem.domain.entity.academic;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.Course;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -9,8 +10,19 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Entity
+@Table(name = "majors")
 public class Major extends BaseEntity<Long> {
+
+    @Column(nullable = false, length = 100)
     private String name;
+
+    @ManyToMany
+    @JoinTable(
+            name = "major_courses",
+            joinColumns = @JoinColumn(name = "major_id"),
+            inverseJoinColumns = @JoinColumn(name = "course_id")
+    )
     private final List<Course> courses = new ArrayList<>();
 
     public Major(String name) {
@@ -18,6 +30,11 @@ public class Major extends BaseEntity<Long> {
             throw new IllegalArgumentException("Name cannot be null or empty");
         
         this.name = name;
+    }
+
+
+    protected Major() {
+
     }
 
     public void updateName(String newName) {
