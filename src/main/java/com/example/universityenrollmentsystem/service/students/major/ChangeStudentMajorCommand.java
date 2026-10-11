@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.students.major;
 
-public class ChangeStudentMajorCommand {
-}
+public record ChangeStudentMajorCommand(Long studentId, Long newMajorId) {}

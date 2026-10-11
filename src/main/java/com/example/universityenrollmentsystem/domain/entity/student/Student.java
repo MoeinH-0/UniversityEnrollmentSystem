@@ -91,6 +91,13 @@ public class Student extends BaseEntity<Long> {
         this.planType = newPlanType;
     }
 
+    public void updateStatus(StudentStatus newStatus) {
+        if (newStatus == null)
+            throw new IllegalArgumentException("Status cannot be null");
+
+        this.status = newStatus;
+    }
+
     public List<EnrollmentRecord> getEnrollments() {
         return Collections.unmodifiableList(enrollments);
     }

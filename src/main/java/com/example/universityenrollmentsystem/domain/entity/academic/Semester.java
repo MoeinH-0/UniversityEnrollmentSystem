@@ -52,23 +52,18 @@ public class Semester extends BaseEntity<Long> {
         this.title = newTitle;
     }
 
-    public void updateStartDate(LocalDate newStartDate) {
-        if (newStartDate == null)
-            throw new IllegalArgumentException("Start date cannot be null");
+    public void reschedule(LocalDate newStartDate, LocalDate newEndDate) {
+        if (newStartDate == null || newEndDate == null)
+            throw new IllegalArgumentException("Dates cannot be null");
 
-        if (this.endDate != null && this.endDate.isBefore(newStartDate))
-            throw new IllegalArgumentException("Start date cannot be after end date");
-
-        this.startDate = newStartDate;
-    }
-
-    public void updateEndDate(LocalDate newEndDate) {
-        if (newEndDate == null)
-            throw new IllegalArgumentException("End date cannot be null");
-
-        if (this.startDate != null && newEndDate.isBefore(this.startDate))
+        if (newEndDate.isBefore(newStartDate))
             throw new IllegalArgumentException("End date cannot be before start date");
 
+        this.startDate = newStartDate;
         this.endDate = newEndDate;
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
     }
 }

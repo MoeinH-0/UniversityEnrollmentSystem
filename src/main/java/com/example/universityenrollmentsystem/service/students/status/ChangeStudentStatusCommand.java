@@ -1,4 +1,5 @@
 package com.example.universityenrollmentsystem.service.students.status;
 
-public class ChangeStudentStatusCommand {
-}
+import com.example.universityenrollmentsystem.domain.entity.student.StudentStatus;
+
+public record ChangeStudentStatusCommand(Long studentId, StudentStatus newStatus) {}

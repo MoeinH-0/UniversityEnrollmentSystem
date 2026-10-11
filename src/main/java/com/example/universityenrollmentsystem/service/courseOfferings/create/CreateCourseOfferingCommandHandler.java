@@ -1,12 +1,14 @@
 package com.example.universityenrollmentsystem.service.courseOfferings.create;
 
-import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import com.example.universityenrollmentsystem.domain.entity.academic.Semester;
+import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
-import com.example.universityenrollmentsystem.repository.course.CourseRepository;
 import com.example.universityenrollmentsystem.repository.academic.SemesterRepository;
 import com.example.universityenrollmentsystem.repository.course.CourseOfferingRepository;
-import com.example.universityenrollmentsystem.service.exceptions.notfound.*;
+import com.example.universityenrollmentsystem.repository.course.CourseRepository;
+import com.example.universityenrollmentsystem.service.exceptions.notfound.CourseNotFoundException;
+import com.example.universityenrollmentsystem.service.exceptions.notfound.SemesterNotFoundException;
+import com.example.universityenrollmentsystem.service.exceptions.validation.CommandValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +31,20 @@ public class CreateCourseOfferingCommandHandler {
     }
 
     @Transactional
-    public void handle(CreateCourseOfferingCommand command) {
+    public Long handle(CreateCourseOfferingCommand command) {
         validator.validate(command);
         
         Course course = courseRepository.findById(command.courseId())
                 .orElseThrow(() -> new CourseNotFoundException(command.courseId()));
+
+        if (course.isDeleted())
+            throw new CommandValidationException("Cannot offer an archived course");
                 
         Semester semester = semesterRepository.findById(command.semesterId())
                 .orElseThrow(() -> new SemesterNotFoundException(command.semesterId()));
+
+        if (semester.isDeleted())
+            throw new CommandValidationException("Cannot offer a course in an archived semester");
                 
         CourseOffering courseOffering = new CourseOffering(
                 course,
@@ -50,5 +58,7 @@ public class CreateCourseOfferingCommandHandler {
         );
         
         courseOfferingRepository.save(courseOffering);
+
+        return courseOffering.getId();
     }
 }

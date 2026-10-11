@@ -1,5 +1,3 @@
 package com.example.universityenrollmentsystem.service.majors.archive;
 
-public class ArchiveMajorCommand {
-}
-
+public record ArchiveMajorCommand(Long majorId) {}

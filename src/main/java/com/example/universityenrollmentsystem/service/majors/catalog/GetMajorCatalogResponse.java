@@ -1,4 +1,16 @@
 package com.example.universityenrollmentsystem.service.majors.catalog;
 
-public class GetMajorCatalogResponse {
+import java.util.List;
+
+public record GetMajorCatalogResponse(
+        Long majorId,
+        String majorName,
+        List<MajorCatalogCourseDto> courses
+) {
+    public record MajorCatalogCourseDto(
+            Long courseId,
+            String name,
+            String courseCode,
+            int credits
+    ) {}
 }

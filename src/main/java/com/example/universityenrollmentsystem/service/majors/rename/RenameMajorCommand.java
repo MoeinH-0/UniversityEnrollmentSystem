@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.majors.rename;
 
-public class RenameMajorCommand {
-}
+public record RenameMajorCommand(Long majorId, String newName) {}

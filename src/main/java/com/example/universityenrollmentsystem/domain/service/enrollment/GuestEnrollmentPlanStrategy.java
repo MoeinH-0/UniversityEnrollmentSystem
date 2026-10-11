@@ -23,10 +23,13 @@ public class GuestEnrollmentPlanStrategy extends BaseEnrollmentPlanStrategy {
     }
 
     @Override
+    protected void checkMajorMatch(Student student, List<CourseOffering> courseOfferings) {
+    }
+
+    @Override
     protected void applySpecificRules(Student student, List<CourseOffering> courseOfferings) {
-        for (CourseOffering offering : courseOfferings) {
+        for (CourseOffering offering : courseOfferings)
             if (!offering.isGuestAllowed())
                 throw new IllegalStateException("Guest students can only select guest-allowed courses.");
-        }
     }
 }

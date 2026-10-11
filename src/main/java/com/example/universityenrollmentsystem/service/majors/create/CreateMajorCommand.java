@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.majors.create;
 
-public class CreateMajorCommand {
-}
+public record CreateMajorCommand(String name) {}

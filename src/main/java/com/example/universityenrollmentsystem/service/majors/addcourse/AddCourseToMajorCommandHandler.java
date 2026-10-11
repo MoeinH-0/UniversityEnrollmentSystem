@@ -6,6 +6,7 @@ import com.example.universityenrollmentsystem.repository.academic.MajorRepositor
 import com.example.universityenrollmentsystem.repository.course.CourseRepository;
 import com.example.universityenrollmentsystem.service.exceptions.notfound.CourseNotFoundException;
 import com.example.universityenrollmentsystem.service.exceptions.notfound.MajorNotFoundException;
+import com.example.universityenrollmentsystem.service.exceptions.validation.CommandValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,8 +32,14 @@ public class AddCourseToMajorCommandHandler {
         Major major = majorRepository.findById(command.majorId())
                 .orElseThrow(() -> new MajorNotFoundException(command.majorId()));
 
+        if (major.isDeleted())
+            throw new CommandValidationException("Cannot add course to an archived major");
+
         Course course = courseRepository.findById(command.courseId())
                 .orElseThrow(() -> new CourseNotFoundException(command.courseId()));
+
+        if (course.isDeleted())
+            throw new CommandValidationException("Cannot add an archived course to a major");
 
         major.addCourse(course);
         majorRepository.save(major);

@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.students.contact;
 
-public class UpdateStudentContactInfoCommand {
-}
+public record UpdateStudentContactInfoCommand(Long studentId, String email, String phoneNumber) {}

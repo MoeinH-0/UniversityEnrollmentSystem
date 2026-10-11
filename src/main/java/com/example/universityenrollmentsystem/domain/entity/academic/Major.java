@@ -68,4 +68,8 @@ public class Major extends BaseEntity<Long> {
         if (!this.courses.remove(course))
             throw new IllegalStateException("Course is not part of this major");
     }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
 }

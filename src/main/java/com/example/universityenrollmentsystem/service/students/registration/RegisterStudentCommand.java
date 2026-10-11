@@ -1,4 +1,10 @@
 package com.example.universityenrollmentsystem.service.students.registration;
 
-public class RegisterStudentCommand {
-}
+import com.example.universityenrollmentsystem.domain.entity.student.EnrollmentPlanType;
+
+public record RegisterStudentCommand(
+        String fullName,
+        String studentNumber,
+        Long majorId,
+        EnrollmentPlanType planType
+) {}

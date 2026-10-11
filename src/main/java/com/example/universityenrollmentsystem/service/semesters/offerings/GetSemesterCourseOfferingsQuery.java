@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.semesters.offerings;
 
-public class GetSemesterCourseOfferingsQuery {
-}
+public record GetSemesterCourseOfferingsQuery(Long semesterId) {}
