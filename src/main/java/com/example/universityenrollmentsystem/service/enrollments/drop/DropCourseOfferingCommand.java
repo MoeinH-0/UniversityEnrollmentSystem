@@ -1,5 +1,5 @@
 package com.example.universityenrollmentsystem.service.enrollments.drop;
 
-public class DropCourseOfferingCommand {
+public record DropCourseOfferingCommand(Long courseOfferingId, Long studentId) {
 }
 

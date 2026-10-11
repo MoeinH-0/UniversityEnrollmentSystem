@@ -1,4 +1,4 @@
 package com.example.universityenrollmentsystem.service.enrollments.submit;
 
-public class SubmitEnrollmentCommand {
+public record SubmitEnrollmentCommand(Long studentId, Long courseOfferingId) {
 }

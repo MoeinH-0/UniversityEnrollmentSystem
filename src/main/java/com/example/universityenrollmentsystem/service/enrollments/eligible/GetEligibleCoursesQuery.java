@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.enrollments.eligible;
 
-public class GetEligibleCoursesQuery {
-}
+public record GetEligibleCoursesQuery(Long studentId, Long semesterId) {}

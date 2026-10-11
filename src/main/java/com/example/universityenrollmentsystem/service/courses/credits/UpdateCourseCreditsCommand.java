@@ -1,4 +1,3 @@
 package com.example.universityenrollmentsystem.service.courses.credits;
 
-public class UpdateCourseCreditsCommand {
-}
+public record UpdateCourseCreditsCommand(Long courseId, int newCredits) {}

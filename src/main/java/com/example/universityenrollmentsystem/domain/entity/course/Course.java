@@ -106,4 +106,20 @@ public class Course extends BaseEntity<Long> {
         if (!this.prerequisites.remove(course))
             throw new IllegalStateException("Course is not a prerequisite");
     }
+
+    public void clearPrerequisites() {
+        this.prerequisites.clear();
+    }
+
+    public void updateCredits(int newCredits) {
+        if (newCredits < MIN_CREDITS || newCredits > MAX_CREDITS)
+            throw new IllegalArgumentException(String.format(
+                    "Credits must be between %d and %d", MIN_CREDITS, MAX_CREDITS));
+
+        this.credits = newCredits;
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
+    }
 }
