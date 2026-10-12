@@ -5,6 +5,7 @@ import com.example.universityenrollmentsystem.domain.entity.course.CourseOfferin
 import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.student.Student;
+import com.example.universityenrollmentsystem.domain.exception.rule.*;
 
 import java.util.List;
 
@@ -22,21 +23,19 @@ public abstract class BaseEnrollmentPlanStrategy implements EnrollmentPlanStrate
 
     private void checkSameSemester(List<CourseOffering> courseOfferings) {
         long semesterCount = courseOfferings.stream()
-                .map(offering -> offering.getSemester().getId())
+                .map(CourseOffering::getSemester)
                 .distinct()
                 .count();
 
         if (semesterCount > 1)
-            throw new IllegalStateException(
-                    "All requested course offerings must belong to the same semester.");
+            throw new CrossSemesterEnrollmentException();
     }
 
     private void checkMaxCredits(Student student, List<CourseOffering> courseOfferings) {
         int maxCredits = getMaxCredits();
 
         if (calculateTotalCredits(student, courseOfferings) > maxCredits)
-            throw new IllegalStateException(
-                    "Max " + maxCredits + " credits allowed for " + getPlanType().name() + " plan.");
+            throw new MaxCreditsExceededException(maxCredits, getPlanType().name());
     }
 
     private void checkDuplicates(Student student, List<CourseOffering> courseOfferings) {
@@ -46,7 +45,7 @@ public abstract class BaseEnrollmentPlanStrategy implements EnrollmentPlanStrate
                 .count();
 
         if (uniqueRequestedCount != courseOfferings.size())
-            throw new IllegalStateException("Requested list contains duplicate courses.");
+            throw new DuplicateEnrollmentException("Requested list contains duplicate courses.");
 
         for (CourseOffering offering : courseOfferings) {
             boolean alreadyEnrolled = student.getEnrollments().stream()
@@ -56,14 +55,14 @@ public abstract class BaseEnrollmentPlanStrategy implements EnrollmentPlanStrate
                             && e.getStatus() == CourseStatus.IN_PROGRESS);
 
             if (alreadyEnrolled)
-                throw new IllegalStateException("Cannot take duplicate course in the same semester.");
+                throw new DuplicateEnrollmentException("Cannot take duplicate course in the same semester.");
         }
     }
 
     protected void checkMajorMatch(Student student, List<CourseOffering> courseOfferings) {
         for (CourseOffering offering : courseOfferings)
             if (!student.getMajor().getCourses().contains(offering.getCourse()))
-                throw new IllegalStateException("Course must belong to student's major.");
+                throw new CourseNotInMajorException();
     }
 
     private void checkPrerequisites(Student student, List<CourseOffering> courseOfferings) {
@@ -75,8 +74,7 @@ public abstract class BaseEnrollmentPlanStrategy implements EnrollmentPlanStrate
                                 && e.getStatus() == CourseStatus.PASSED);
 
                 if (!hasPassed)
-                    throw new IllegalStateException(
-                            "Prerequisite not passed for course: " + offering.getCourse().getName());
+                    throw new PrerequisiteNotMetException(offering.getCourse().getName());
             }
         }
     }

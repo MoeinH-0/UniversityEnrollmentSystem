@@ -1,16 +1,13 @@
 package com.example.universityenrollmentsystem.domain.entity.academic;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
-import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 @Entity
@@ -31,33 +28,34 @@ public class Semester extends BaseEntity<Long> {
 
     public Semester(String title, LocalDate startDate, LocalDate endDate) {
         if (title == null || title.isBlank())
-            throw new IllegalArgumentException("Title cannot be null or empty");
-            
+            throw new DomainValidationException("Title cannot be null or empty");
+
         if (startDate == null || endDate == null)
-            throw new IllegalArgumentException("Dates cannot be null");
-            
+            throw new DomainValidationException("Dates cannot be null");
+
         if (endDate.isBefore(startDate))
-            throw new IllegalArgumentException("End date cannot be before start date");
-            
+            throw new DomainValidationException("End date cannot be before start date");
+
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
     }
-    protected Semester(){}
+
+    protected Semester() {}
 
     public void updateTitle(String newTitle) {
         if (newTitle == null || newTitle.isBlank())
-            throw new IllegalArgumentException("Title cannot be null or empty");
+            throw new DomainValidationException("Title cannot be null or empty");
 
         this.title = newTitle;
     }
 
     public void reschedule(LocalDate newStartDate, LocalDate newEndDate) {
         if (newStartDate == null || newEndDate == null)
-            throw new IllegalArgumentException("Dates cannot be null");
+            throw new DomainValidationException("Dates cannot be null");
 
         if (newEndDate.isBefore(newStartDate))
-            throw new IllegalArgumentException("End date cannot be before start date");
+            throw new DomainValidationException("End date cannot be before start date");
 
         this.startDate = newStartDate;
         this.endDate = newEndDate;

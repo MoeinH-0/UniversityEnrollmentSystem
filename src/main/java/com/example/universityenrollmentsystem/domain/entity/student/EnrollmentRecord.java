@@ -3,6 +3,8 @@ package com.example.universityenrollmentsystem.domain.entity.student;
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
+import com.example.universityenrollmentsystem.domain.exception.state.InvalidEnrollmentStateException;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -27,10 +29,10 @@ public class EnrollmentRecord extends BaseEntity<Long> {
 
     public EnrollmentRecord(Student student, CourseOffering courseOffering) {
         if (student == null)
-            throw new IllegalArgumentException("Student cannot be null");
+            throw new DomainValidationException("Student cannot be null");
             
         if (courseOffering == null)
-            throw new IllegalArgumentException("CourseOffering cannot be null");
+            throw new DomainValidationException("CourseOffering cannot be null");
             
         this.student = student;
         this.courseOffering = courseOffering;
@@ -46,16 +48,16 @@ public class EnrollmentRecord extends BaseEntity<Long> {
 
     public void assignGrade(Double grade) {
         if (grade == null)
-            throw new IllegalArgumentException("Grade cannot be null");
+            throw new DomainValidationException("Grade cannot be null");
 
         if (grade < MIN_GRADE || grade > MAX_GRADE)
-            throw new IllegalArgumentException("Grade must be between " + MIN_GRADE + " and " + MAX_GRADE);
+            throw new DomainValidationException("Grade must be between " + MIN_GRADE + " and " + MAX_GRADE);
 
         if (java.math.BigDecimal.valueOf(grade).stripTrailingZeros().scale() > MAX_GRADE_DECIMALS)
-            throw new IllegalArgumentException("Grade can have at most " + MAX_GRADE_DECIMALS + " decimal places");
+            throw new DomainValidationException("Grade can have at most " + MAX_GRADE_DECIMALS + " decimal places");
 
         if (this.status != CourseStatus.IN_PROGRESS)
-            throw new IllegalStateException("Can only assign grade to in-progress courses");
+            throw new InvalidEnrollmentStateException("Can only assign grade to in-progress courses");
 
         this.grade = grade;
         
@@ -67,14 +69,14 @@ public class EnrollmentRecord extends BaseEntity<Long> {
 
     public void markAsPassed() {
         if (this.status != CourseStatus.IN_PROGRESS)
-            throw new IllegalStateException("Only in-progress courses can be marked as passed");
+            throw new InvalidEnrollmentStateException("Only in-progress courses can be marked as passed");
 
         this.status = CourseStatus.PASSED;
     }
 
     public void markAsFailed() {
         if (this.status != CourseStatus.IN_PROGRESS)
-            throw new IllegalStateException("Only in-progress courses can be marked as failed");
+            throw new InvalidEnrollmentStateException("Only in-progress courses can be marked as failed");
 
         this.status = CourseStatus.FAILED;
     }

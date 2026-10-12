@@ -5,6 +5,7 @@ import com.example.universityenrollmentsystem.domain.entity.course.CourseOfferin
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.student.EnrollmentPlanType;
 import com.example.universityenrollmentsystem.domain.entity.student.Student;
+import com.example.universityenrollmentsystem.domain.exception.rule.OutsideMajorLimitExceededException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -43,6 +44,6 @@ public class HonorsEnrollmentPlanStrategy extends BaseEnrollmentPlanStrategy {
                 .count();
 
         if (existingOutsideCount + requestedOutsideCount > MAX_OUTSIDE_MAJOR_COURSES)
-            throw new IllegalStateException("Honors students can pick at most " + MAX_OUTSIDE_MAJOR_COURSES + " course outside their major per semester.");
+            throw new OutsideMajorLimitExceededException(MAX_OUTSIDE_MAJOR_COURSES);
     }
 }

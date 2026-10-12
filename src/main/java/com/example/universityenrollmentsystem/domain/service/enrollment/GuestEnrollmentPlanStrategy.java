@@ -3,6 +3,7 @@ package com.example.universityenrollmentsystem.domain.service.enrollment;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
 import com.example.universityenrollmentsystem.domain.entity.student.EnrollmentPlanType;
 import com.example.universityenrollmentsystem.domain.entity.student.Student;
+import com.example.universityenrollmentsystem.domain.exception.rule.GuestPolicyViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -30,6 +31,6 @@ public class GuestEnrollmentPlanStrategy extends BaseEnrollmentPlanStrategy {
     protected void applySpecificRules(Student student, List<CourseOffering> courseOfferings) {
         for (CourseOffering offering : courseOfferings)
             if (!offering.isGuestAllowed())
-                throw new IllegalStateException("Guest students can only select guest-allowed courses.");
+                throw new GuestPolicyViolationException();
     }
 }

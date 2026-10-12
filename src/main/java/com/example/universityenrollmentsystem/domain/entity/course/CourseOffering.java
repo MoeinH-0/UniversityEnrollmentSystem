@@ -2,6 +2,7 @@ package com.example.universityenrollmentsystem.domain.entity.course;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.academic.Semester;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -45,22 +46,22 @@ public class CourseOffering extends BaseEntity<Long> {
                           String section, boolean guestAllowed, int capacity,
                           String classTime, LocalDate examDate) {
         if (course == null)
-            throw new IllegalArgumentException("Course cannot be null");
+            throw new DomainValidationException("Course cannot be null");
 
         if (semester == null)
-            throw new IllegalArgumentException("Semester cannot be null");
+            throw new DomainValidationException("Semester cannot be null");
 
         if (professorName == null || professorName.isBlank())
-            throw new IllegalArgumentException("ProfessorName cannot be null or empty");
+            throw new DomainValidationException("ProfessorName cannot be null or empty");
 
         if (section == null || section.isBlank())
-            throw new IllegalArgumentException("Section cannot be null or empty");
+            throw new DomainValidationException("Section cannot be null or empty");
 
         if (capacity <= 0)
-            throw new IllegalArgumentException("Capacity must be greater than zero");
+            throw new DomainValidationException("Capacity must be greater than zero");
 
         if (examDate != null && (examDate.isBefore(semester.getStartDate()) || examDate.isAfter(semester.getEndDate())))
-            throw new IllegalArgumentException("Exam date must be within the semester dates");
+            throw new DomainValidationException("Exam date must be within the semester dates");
 
         this.course = course;
         this.semester = semester;
@@ -76,21 +77,21 @@ public class CourseOffering extends BaseEntity<Long> {
 
     public void changeProfessor(String newProfessorName) {
         if (newProfessorName == null || newProfessorName.isBlank())
-            throw new IllegalArgumentException("ProfessorName cannot be null or empty");
+            throw new DomainValidationException("ProfessorName cannot be null or empty");
 
         this.professorName = newProfessorName;
     }
 
     public void updateSection(String newSection) {
         if (newSection == null || newSection.isBlank())
-            throw new IllegalArgumentException("Section cannot be null or empty");
+            throw new DomainValidationException("Section cannot be null or empty");
 
         this.section = newSection;
     }
 
     public void updateCapacity(int newCapacity) {
         if (newCapacity <= 0)
-            throw new IllegalArgumentException("Capacity must be greater than zero");
+            throw new DomainValidationException("Capacity must be greater than zero");
 
         this.capacity = newCapacity;
     }
@@ -101,7 +102,7 @@ public class CourseOffering extends BaseEntity<Long> {
 
     public void updateExamDate(LocalDate newExamDate) {
         if (newExamDate != null && (newExamDate.isBefore(this.semester.getStartDate()) || newExamDate.isAfter(this.semester.getEndDate())))
-            throw new IllegalArgumentException("Exam date must be within the semester dates");
+            throw new DomainValidationException("Exam date must be within the semester dates");
 
         this.examDate = newExamDate;
     }

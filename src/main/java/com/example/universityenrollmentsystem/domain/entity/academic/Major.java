@@ -2,6 +2,8 @@ package com.example.universityenrollmentsystem.domain.entity.academic;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.Course;
+import com.example.universityenrollmentsystem.domain.exception.state.InvalidMajorStateException;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -30,20 +32,17 @@ public class Major extends BaseEntity<Long> {
 
     public Major(String name) {
         if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        
+            throw new DomainValidationException("Name cannot be null or empty");
+
         this.name = name;
     }
 
-
-    protected Major() {
-
-    }
+    protected Major() {}
 
     public void updateName(String newName) {
         if (newName == null || newName.isBlank())
-            throw new IllegalArgumentException("Name cannot be null or empty");
-        
+            throw new DomainValidationException("Name cannot be null or empty");
+
         this.name = newName;
     }
 
@@ -53,20 +52,20 @@ public class Major extends BaseEntity<Long> {
 
     public void addCourse(Course course) {
         if (course == null)
-            throw new IllegalArgumentException("Course cannot be null");
-            
+            throw new DomainValidationException("Course cannot be null");
+
         if (this.courses.contains(course))
-            throw new IllegalStateException("Course is already added to this major");
-            
+            throw new InvalidMajorStateException("Course is already added to this major");
+
         this.courses.add(course);
     }
 
     public void removeCourse(Course course) {
         if (course == null)
-            throw new IllegalArgumentException("Course cannot be null");
+            throw new DomainValidationException("Course cannot be null");
 
         if (!this.courses.remove(course))
-            throw new IllegalStateException("Course is not part of this major");
+            throw new InvalidMajorStateException("Course is not part of this major");
     }
 
     public void markAsDeleted() {

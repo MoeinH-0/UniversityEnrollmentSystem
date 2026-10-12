@@ -4,6 +4,9 @@ import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.academic.Major;
+import com.example.universityenrollmentsystem.domain.exception.rule.DuplicateEnrollmentException;
+import com.example.universityenrollmentsystem.domain.exception.state.InvalidEnrollmentStateException;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import com.example.universityenrollmentsystem.domain.service.enrollment.EnrollmentPlanStrategy;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -46,16 +49,16 @@ public class Student extends BaseEntity<Long> {
 
     public Student(String fullName, String studentNumber, Major major, EnrollmentPlanType planType) {
         if (fullName == null || fullName.isBlank())
-            throw new IllegalArgumentException("FullName cannot be null or empty");
+            throw new DomainValidationException("FullName cannot be null or empty");
 
         if (studentNumber == null || studentNumber.isBlank())
-            throw new IllegalArgumentException("StudentNumber cannot be null or empty");
+            throw new DomainValidationException("StudentNumber cannot be null or empty");
 
         if (major == null)
-            throw new IllegalArgumentException("Major cannot be null");
+            throw new DomainValidationException("Major cannot be null");
 
         if (planType == null)
-            throw new IllegalArgumentException("PlanType cannot be null");
+            throw new DomainValidationException("PlanType cannot be null");
 
         this.fullName = fullName;
         this.studentNumber = studentNumber;
@@ -72,28 +75,28 @@ public class Student extends BaseEntity<Long> {
 
     public void updateFullName(String newFullName) {
         if (newFullName == null || newFullName.isBlank())
-            throw new IllegalArgumentException("FullName cannot be null or empty");
+            throw new DomainValidationException("FullName cannot be null or empty");
             
         this.fullName = newFullName;
     }
 
     public void updateMajor(Major newMajor) {
         if (newMajor == null)
-            throw new IllegalArgumentException("Major cannot be null");
+            throw new DomainValidationException("Major cannot be null");
             
         this.major = newMajor;
     }
 
     public void updatePlanType(EnrollmentPlanType newPlanType) {
         if (newPlanType == null)
-            throw new IllegalArgumentException("PlanType cannot be null");
+            throw new DomainValidationException("PlanType cannot be null");
             
         this.planType = newPlanType;
     }
 
     public void updateStatus(StudentStatus newStatus) {
         if (newStatus == null)
-            throw new IllegalArgumentException("Status cannot be null");
+            throw new DomainValidationException("Status cannot be null");
 
         this.status = newStatus;
     }
@@ -104,10 +107,10 @@ public class Student extends BaseEntity<Long> {
 
     public void enroll(List<CourseOffering> courseOfferings, EnrollmentPlanStrategy strategy) {
         if (courseOfferings == null || courseOfferings.isEmpty())
-            throw new IllegalArgumentException("CourseOfferings cannot be null or empty");
+            throw new DomainValidationException("CourseOfferings cannot be null or empty");
 
         if (strategy == null)
-            throw new IllegalArgumentException("Strategy cannot be null");
+            throw new DomainValidationException("Strategy cannot be null");
 
         strategy.validate(this, courseOfferings);
 
@@ -117,7 +120,7 @@ public class Student extends BaseEntity<Long> {
                             (r.getStatus() == CourseStatus.IN_PROGRESS || r.getStatus() == CourseStatus.PASSED));
 
             if (alreadyEnrolledOrPassed)
-                throw new IllegalStateException("Student is already enrolled in or has passed this course");
+                throw new DuplicateEnrollmentException("Student is already enrolled in or has passed this course");
 
             EnrollmentRecord record = new EnrollmentRecord(this, courseOffering);
             this.enrollments.add(record);
@@ -126,7 +129,7 @@ public class Student extends BaseEntity<Long> {
 
     public void drop(CourseOffering courseOffering) {
         if (courseOffering == null)
-            throw new IllegalArgumentException("CourseOffering cannot be null");
+            throw new DomainValidationException("CourseOffering cannot be null");
 
         boolean removed = this.enrollments.removeIf(record -> 
             record.getCourseOffering().equals(courseOffering) && 
@@ -134,6 +137,6 @@ public class Student extends BaseEntity<Long> {
         );
 
         if (!removed)
-            throw new IllegalStateException("Cannot drop course that is not in progress or doesn't exist");
+            throw new InvalidEnrollmentStateException("Cannot drop course that is not in progress or doesn't exist");
     }
 }

@@ -2,6 +2,8 @@ package com.example.universityenrollmentsystem.domain.entity.course;
 
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.academic.Major;
+import com.example.universityenrollmentsystem.domain.exception.state.InvalidCourseStateException;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -46,13 +48,13 @@ public class Course extends BaseEntity<Long> {
 
     public Course(String name, String courseCode, int credits) {
         if (name == null || name.isBlank())
-            throw new IllegalArgumentException("Name cannot be null or empty");
+            throw new DomainValidationException("Name cannot be null or empty");
 
         if (courseCode == null || courseCode.isBlank())
-            throw new IllegalArgumentException("CourseCode cannot be null or empty");
+            throw new DomainValidationException("CourseCode cannot be null or empty");
 
         if (credits < MIN_CREDITS || credits > MAX_CREDITS)
-            throw new IllegalArgumentException(String.format(
+            throw new DomainValidationException(String.format(
                     "Credits must be between %d and %d", MIN_CREDITS, MAX_CREDITS));
 
         this.name = name;
@@ -60,20 +62,18 @@ public class Course extends BaseEntity<Long> {
         this.credits = credits;
     }
 
-    protected Course() {
-
-    }
+    protected Course() {}
 
     public void updateName(String newName) {
         if (newName == null || newName.isBlank())
-            throw new IllegalArgumentException("Name cannot be null or empty");
+            throw new DomainValidationException("Name cannot be null or empty");
 
         this.name = newName;
     }
 
     public void updateCourseCode(String newCourseCode) {
         if (newCourseCode == null || newCourseCode.isBlank())
-            throw new IllegalArgumentException("CourseCode cannot be null or empty");
+            throw new DomainValidationException("CourseCode cannot be null or empty");
 
         this.courseCode = newCourseCode;
     }
@@ -88,23 +88,23 @@ public class Course extends BaseEntity<Long> {
 
     public void addPrerequisite(Course course) {
         if (course == null)
-            throw new IllegalArgumentException("Prerequisite cannot be null");
+            throw new DomainValidationException("Prerequisite cannot be null");
 
         if (this.equals(course))
-            throw new IllegalStateException("A course cannot be a prerequisite of itself");
+            throw new InvalidCourseStateException("A course cannot be a prerequisite of itself");
 
         if (this.prerequisites.contains(course))
-            throw new IllegalStateException("Prerequisite already added");
+            throw new InvalidCourseStateException("Prerequisite already added");
 
         this.prerequisites.add(course);
     }
 
     public void removePrerequisite(Course course) {
         if (course == null)
-            throw new IllegalArgumentException("Prerequisite cannot be null");
+            throw new DomainValidationException("Prerequisite cannot be null");
 
         if (!this.prerequisites.remove(course))
-            throw new IllegalStateException("Course is not a prerequisite");
+            throw new InvalidCourseStateException("Course is not a prerequisite");
     }
 
     public void clearPrerequisites() {
@@ -113,7 +113,7 @@ public class Course extends BaseEntity<Long> {
 
     public void updateCredits(int newCredits) {
         if (newCredits < MIN_CREDITS || newCredits > MAX_CREDITS)
-            throw new IllegalArgumentException(String.format(
+            throw new DomainValidationException(String.format(
                     "Credits must be between %d and %d", MIN_CREDITS, MAX_CREDITS));
 
         this.credits = newCredits;

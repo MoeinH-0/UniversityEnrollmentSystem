@@ -1,9 +1,8 @@
 package com.example.universityenrollmentsystem.domain.service.enrollment;
 
 import com.example.universityenrollmentsystem.domain.entity.student.EnrollmentPlanType;
+import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
 import org.springframework.stereotype.Component;
-
-
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +19,8 @@ public class EnrollmentPlanFactory {
 
     public EnrollmentPlanStrategy getStrategy(EnrollmentPlanType planType) {
         if (!strategies.containsKey(planType))
-            throw new IllegalArgumentException("Strategy not found for plan type: " + planType);
-            
+            throw new DomainValidationException("Strategy not found for plan type: " + planType);
+
         return strategies.get(planType);
     }
 }
