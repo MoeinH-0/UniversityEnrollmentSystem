@@ -27,7 +27,7 @@ public class CreateCourseCommandHandler {
     }
 
     @Transactional
-    public void handle(CreateCourseCommand command) {
+    public Long handle(CreateCourseCommand command) {
         validator.validate(command);
 
         if (courseRepository.existsByCourseCode(command.courseCode()))
@@ -52,5 +52,7 @@ public class CreateCourseCommandHandler {
             major.addCourse(course);
             majorRepository.save(major);
         }
+
+        return course.getId();
     }
 }
