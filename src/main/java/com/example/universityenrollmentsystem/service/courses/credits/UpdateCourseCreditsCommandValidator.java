@@ -1,7 +1,8 @@
 package com.example.universityenrollmentsystem.service.courses.credits;
 
-import org.springframework.stereotype.Component;
+import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import com.example.universityenrollmentsystem.service.exceptions.validation.CommandValidationException;
+import org.springframework.stereotype.Component;
 
 @Component
 public class UpdateCourseCreditsCommandValidator {
@@ -12,7 +13,7 @@ public class UpdateCourseCreditsCommandValidator {
         if (command.courseId() == null)
             throw new CommandValidationException("CourseId cannot be null");
 
-        if (command.newCredits() <= 0)
-            throw new CommandValidationException("Credits must be greater than zero");
+        if (command.newCredits() < Course.MIN_CREDITS || command.newCredits() > Course.MAX_CREDITS)
+            throw new CommandValidationException(String.format("Credits must be between %d and %d", Course.MIN_CREDITS, Course.MAX_CREDITS));
     }
 }

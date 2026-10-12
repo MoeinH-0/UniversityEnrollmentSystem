@@ -23,37 +23,48 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BaseNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFound(BaseNotFoundException ex, HttpServletRequest request) {
+
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 
     @ExceptionHandler(BaseConflictException.class)
     public ResponseEntity<ErrorResponse> handleConflict(BaseConflictException ex, HttpServletRequest request) {
+
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
     @ExceptionHandler(DuplicateEnrollmentException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateEnrollment(DuplicateEnrollmentException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleDuplicateEnrollment(DuplicateEnrollmentException ex,
+                                                                   HttpServletRequest request) {
+
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
     @ExceptionHandler(CommandValidationException.class)
-    public ResponseEntity<ErrorResponse> handleCommandValidation(CommandValidationException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleCommandValidation(CommandValidationException ex,
+                                                                 HttpServletRequest request) {
+
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 
     @ExceptionHandler(DomainValidationException.class)
-    public ResponseEntity<ErrorResponse> handleDomainValidation(DomainValidationException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleDomainValidation(DomainValidationException ex,
+                                                                HttpServletRequest request) {
+
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request);
     }
 
     @ExceptionHandler(DomainException.class)
-    public ResponseEntity<ErrorResponse> handleDomain(DomainException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleDomain(DomainException ex,
+                                                      HttpServletRequest request) {
+
         return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, ex.getMessage(), request);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpServletRequest request) {
+
         String message = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .findFirst()
@@ -63,6 +74,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneral(Exception ex, HttpServletRequest request) {
+
         String message = ex.getMessage();
         if (message == null || message.isBlank())
             message = DEFAULT_INTERNAL_ERROR_MESSAGE;
@@ -70,7 +82,9 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, message, request);
     }
 
-    private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message, HttpServletRequest request) {
+    private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message,
+                                                        HttpServletRequest request) {
+
         ErrorResponse response = new ErrorResponse(
                 status.value(),
                 status.getReasonPhrase(),

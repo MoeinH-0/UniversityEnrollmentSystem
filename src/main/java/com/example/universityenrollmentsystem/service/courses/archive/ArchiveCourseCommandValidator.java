@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import com.example.universityenrollmentsystem.service.exceptions.validation.CommandValidationException;
 
 @Component
-public class       ArchiveCourseCommandValidator {
+public class ArchiveCourseCommandValidator {
     public void validate(ArchiveCourseCommand command) {
         if (command == null)
             throw new CommandValidationException("Command cannot be null");
