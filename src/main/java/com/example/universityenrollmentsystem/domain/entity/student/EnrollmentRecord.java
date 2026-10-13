@@ -5,13 +5,25 @@ import com.example.universityenrollmentsystem.domain.entity.course.CourseOfferin
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.exception.state.InvalidEnrollmentStateException;
 import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 @Getter
 @Entity
 @Table(name = "enrollment_records")
 public class EnrollmentRecord extends BaseEntity<Long> {
+
+    public static final double MIN_GRADE = 0.0;
+    public static final double MAX_GRADE = 20.0;
+    public static final double PASSING_GRADE = 10.0;
+    public static final int MAX_GRADE_DECIMALS = 2;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", nullable = false)
@@ -40,11 +52,6 @@ public class EnrollmentRecord extends BaseEntity<Long> {
     }
 
     protected EnrollmentRecord(){}
-
-    public static final double MIN_GRADE = 0.0;
-    public static final double MAX_GRADE = 20.0;
-    public static final double PASSING_GRADE = 10.0;
-    public static final int MAX_GRADE_DECIMALS = 2;
 
     public void assignGrade(Double grade) {
         if (grade == null)

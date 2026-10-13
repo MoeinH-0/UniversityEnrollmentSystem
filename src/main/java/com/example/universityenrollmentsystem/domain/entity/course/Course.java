@@ -4,7 +4,12 @@ import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.academic.Major;
 import com.example.universityenrollmentsystem.domain.exception.state.InvalidCourseStateException;
 import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Getter;
@@ -17,6 +22,9 @@ import java.util.List;
 @Entity
 @Table(name = "courses")
 public class Course extends BaseEntity<Long> {
+
+    public static final int MIN_CREDITS = 1;
+    public static final int MAX_CREDITS = 4;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -42,9 +50,6 @@ public class Course extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
-
-    public static final int MIN_CREDITS = 1;
-    public static final int MAX_CREDITS = 4;
 
     public Course(String name, String courseCode, int credits) {
         if (name == null || name.isBlank())

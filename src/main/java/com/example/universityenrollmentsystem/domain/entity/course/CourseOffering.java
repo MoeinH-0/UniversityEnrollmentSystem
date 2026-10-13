@@ -3,7 +3,12 @@ package com.example.universityenrollmentsystem.domain.entity.course;
 import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.academic.Semester;
 import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.time.LocalDate;

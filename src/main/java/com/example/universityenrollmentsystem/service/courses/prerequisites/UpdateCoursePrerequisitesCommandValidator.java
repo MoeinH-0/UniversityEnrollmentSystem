@@ -11,5 +11,9 @@ public class UpdateCoursePrerequisitesCommandValidator {
 
         if (command.courseId() == null)
             throw new CommandValidationException("CourseId cannot be null");
+
+        if (command.prerequisiteIds() != null && command.prerequisiteIds().stream().distinct().count()
+                != command.prerequisiteIds().size())
+            throw new CommandValidationException("Prerequisite IDs cannot contain duplicates");
     }
 }

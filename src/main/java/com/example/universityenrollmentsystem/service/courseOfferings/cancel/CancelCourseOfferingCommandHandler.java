@@ -2,7 +2,7 @@ package com.example.universityenrollmentsystem.service.courseOfferings.cancel;
 
 import com.example.universityenrollmentsystem.domain.entity.course.CourseOffering;
 import com.example.universityenrollmentsystem.repository.course.CourseOfferingRepository;
-import com.example.universityenrollmentsystem.service.exceptions.notfound.*;
+import com.example.universityenrollmentsystem.service.exceptions.notfound.CourseOfferingNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

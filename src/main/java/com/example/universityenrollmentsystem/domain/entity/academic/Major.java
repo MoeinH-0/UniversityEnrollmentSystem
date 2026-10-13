@@ -4,7 +4,12 @@ import com.example.universityenrollmentsystem.domain.entity.BaseEntity;
 import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import com.example.universityenrollmentsystem.domain.exception.state.InvalidMajorStateException;
 import com.example.universityenrollmentsystem.domain.exception.validation.DomainValidationException;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -25,7 +30,7 @@ public class Major extends BaseEntity<Long> {
             joinColumns = @JoinColumn(name = "major_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    private final List<Course> courses = new ArrayList<>();
+    private List<Course> courses = new ArrayList<>();
 
     @Column(nullable = false)
     private boolean isDeleted = false;

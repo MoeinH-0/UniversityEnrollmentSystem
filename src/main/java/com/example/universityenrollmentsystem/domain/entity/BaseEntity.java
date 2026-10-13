@@ -22,11 +22,16 @@ public abstract class BaseEntity<ID extends Serializable> {
         if (this == o)
             return true;
 
-        if (o == null || getClass() != o.getClass())
+        if (o == null)
             return false;
 
-        BaseEntity<?> that = (BaseEntity<?>) o;
-        return id != null && Objects.equals(id, that.id);
+        if (!(o instanceof BaseEntity<?> that))
+            return false;
+
+        if (getClass().isInstance(o) || o.getClass().isInstance(this))
+            return getId() != null && Objects.equals(getId(), that.getId());
+
+        return false;
     }
 
     @Override

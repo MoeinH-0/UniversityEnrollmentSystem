@@ -5,7 +5,11 @@ import com.example.universityenrollmentsystem.domain.entity.course.CourseOfferin
 import com.example.universityenrollmentsystem.domain.entity.course.Course;
 import com.example.universityenrollmentsystem.domain.entity.course.CourseStatus;
 import com.example.universityenrollmentsystem.domain.entity.student.Student;
-import com.example.universityenrollmentsystem.domain.exception.rule.*;
+import com.example.universityenrollmentsystem.domain.exception.rule.CourseNotInMajorException;
+import com.example.universityenrollmentsystem.domain.exception.rule.CrossSemesterEnrollmentException;
+import com.example.universityenrollmentsystem.domain.exception.rule.DuplicateEnrollmentException;
+import com.example.universityenrollmentsystem.domain.exception.rule.MaxCreditsExceededException;
+import com.example.universityenrollmentsystem.domain.exception.rule.PrerequisiteNotMetException;
 
 import java.util.List;
 
